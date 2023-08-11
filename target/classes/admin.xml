@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<flow name="admin-flow" doc:id="02d67671-40e2-468c-a960-2ee0ceb59eba" >
+		<http:listener doc:name="Listener" doc:id="d5ab9412-2aa8-44cb-aa7e-c67a9116d226" config-ref="api-user-v1-httpListenerConfig" path="/health"/>
+		<set-payload value="#[null]" doc:name="Set Null Payload" doc:id="2987190d-1af0-4686-8279-cd93cec6e6f3" />
+	</flow>
+</mule>

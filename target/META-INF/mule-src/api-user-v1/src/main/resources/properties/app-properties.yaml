@@ -1,0 +1,17 @@
+database:
+  host: "localhost"
+  port: "3306"
+  name: "users" 
+    
+log:
+  category:
+    base: "esb.api-user-v2"
+    
+mule:
+  env: "local"
+
+json:
+  logger:
+    application:
+      name: "api-user"
+      version: "v1"

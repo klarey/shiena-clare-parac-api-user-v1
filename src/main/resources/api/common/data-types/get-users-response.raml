@@ -1,0 +1,19 @@
+#%RAML 1.0 DataType
+type: object
+displayName: get-user-response
+properties:
+  users:
+    type: array
+    items:
+      properties:
+        username:
+          type: string
+        fullname:
+          type: string
+        age:
+          type: number
+        gender:
+          type: string
+        dateRegistered:
+          type: string
+          

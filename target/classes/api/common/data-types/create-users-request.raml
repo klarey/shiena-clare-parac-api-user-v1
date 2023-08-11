@@ -1,0 +1,29 @@
+#%RAML 1.0 DataType
+type: object
+displayName: create-users
+properties:
+  users:
+    type: array
+    items:
+      properties:
+        username:
+          type: string
+          required: true
+          minLength: 1
+        fullname:
+          type: string
+          required: true
+          minLength: 1
+        birthday:
+          type: string
+          required: true
+          minLength: 1
+        gender:
+          type: string
+          required: true
+          minLength: 1
+        dateRegistered:
+          type: string
+          required: true
+          minLength: 1
+          

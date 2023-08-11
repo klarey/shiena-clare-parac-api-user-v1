@@ -1,0 +1,32 @@
+%dw 2.0
+
+type auto_5a081287_b9fb_4130_a81c_b0313a33b4aa_Output_Attributes = {|
+  clientCertificate?: {|
+    publicKey?: {|  |}, 
+    "type"?: String, 
+    encoded?: Binary
+  |}, 
+  headers: {|
+    code: String, 
+    "X-TransactionID"?: String, 
+    "X-TrackingID"?: String, 
+    "X-SessionID"?: String, 
+    "X-CreationTime"?: String, 
+    "X-InitialSystem"?: String, 
+    "X-InitialComponent"?: String, 
+    "X-InitialOperation"?: String
+  |}, 
+  listenerPath: String, 
+  method: String, 
+  queryParams: {|  |}, 
+  queryString: String, 
+  relativePath: String, 
+  remoteAddress: String, 
+  requestPath: String, 
+  requestUri: String, 
+  scheme: String, 
+  uriParams: {| username: String |}, 
+  version: String, 
+  localAddress: String
+|}
+

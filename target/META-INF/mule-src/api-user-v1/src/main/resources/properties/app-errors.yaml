@@ -1,0 +1,28 @@
+error.user.api:
+    default:
+        statusCode: "500"
+        errorCode: "SERVER_ERROR"
+        errorType: "ANY"
+        title: "Internal server error"
+        description: "An unexpected error has occurred"
+    usernotfound:
+        statusCode: "404"
+        errorCode: "NOT_FOUND"
+        title: "User not found"
+        description: "User with the given username does not exist"
+    userdetailsnotfound:
+        statusCode: "404"
+        errorCode: "NOT_FOUND"
+        title: "User details not found"
+        description: "User details not found"
+    inactiveuser:
+        statusCode: "404"
+        errorCode: "INACTIVE_USER"
+        title: "User is not active"
+        description: "User with the given username is not active"
+    unauthorized:
+        statusCode: "401"
+        errorCode: "UNAUTHORIZED"
+        title: "Unauthorized"
+        description: "This endpoint requires all requests to be authenticated"
+    

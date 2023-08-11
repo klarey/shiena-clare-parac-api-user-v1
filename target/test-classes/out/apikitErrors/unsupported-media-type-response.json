@@ -1,0 +1,8 @@
+{
+  "error": {
+    "status": "415",
+    "code": "MEDIA_TYPE_UNSUPPORTED",
+    "title": "Invalid media type",
+    "details": "Request media type is not supported"
+  }
+}

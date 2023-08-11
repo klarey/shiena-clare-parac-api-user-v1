@@ -1,0 +1,8 @@
+{
+    "error": {
+        "status": "401",
+        "code": "UNAUTHORIZED",
+        "title": "Unauthorized",
+        "details": "This endpoint requires all requests to be authenticated:Invalid code header"
+    }
+}

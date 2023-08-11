@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd">
+	<sub-flow name="validate-header-subflow" doc:id="5a081287-b9fb-4130-a81c-b0313a33b4aa" >
+		<set-variable value="#[attributes.headers.code]" doc:name="Set code Variable" doc:id="eae72bdb-4e36-4d1f-82a2-82df7981f376" variableName="code"/>
+		<choice doc:name="Choice" doc:id="9a099d06-5052-4857-902f-cdf4587009a6" >
+			<when expression="#[vars.code != p('header.code')]">
+				<raise-error doc:name="Raise Invalid Header Error" doc:id="824fdc57-70c7-4899-9bc3-55c605ced299" type="MULE:VALIDATION" description="Invalid code header"/>
+			</when>
+			<otherwise >
+				<json-logger:logger doc:name="Log valid code" doc:id="e40927c9-dc89-4328-a445-c9349699086e" config-ref="JSON_Logger_Config" message="#[&quot;Code header &quot; ++ attributes.headers.'code' ++ &quot; is valid.&quot;]"/>
+			</otherwise>
+		</choice>
+	</sub-flow>
+</mule>

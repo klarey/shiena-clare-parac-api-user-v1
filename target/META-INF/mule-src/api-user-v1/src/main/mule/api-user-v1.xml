@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
+    <apikit:config name="api-user-v1-config" api="api/api-user-v1.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <http:listener-config name="api-user-v1-httpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="8081" />
+    </http:listener-config>
+    <flow name="api-user-v1-main">
+        <http:listener config-ref="api-user-v1-httpListenerConfig" path="/api/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:router config-ref="api-user-v1-config" />
+		<error-handler ref="apikit-error-handler" />
+    </flow>
+    <flow name="api-user-v1-console" doc:id="b8104d45-05ec-43f2-aeeb-c3bf2a698705">
+        <http:listener config-ref="api-user-v1-httpListenerConfig" path="/console/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="api-user-v1-config" />
+        <error-handler>
+            <on-error-propagate type="APIKIT:NOT_FOUND">
+                <ee:transform doc:name="Transform Message">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Resource not found"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[404]]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+        </error-handler>
+    </flow>
+    <flow name="get:\users:api-user-v1-config" doc:id="21235bde-3a7c-42d9-b523-a661f61aaff2">
+        <flow-ref doc:name="Flow Reference" doc:id="36a414e7-449b-4dba-938c-964a787f870b" name="get-users-subflow" />
+        <error-handler ref="app-error-handler" />
+    </flow>
+    <flow name="get:\users\(username):api-user-v1-config" doc:id="bbb0714a-c8de-45d0-a7fd-fd711c33a137">
+        <flow-ref doc:name="Flow Reference" doc:id="a428e3ba-24c3-4498-8ffa-696bcc1c15d1" name="get-user-by-username-subflow" />
+        <error-handler ref="app-error-handler" />
+    </flow>
+    <flow name="post:\users:application\json:api-user-v1-config" doc:id="f5350658-6811-420c-8427-b33b99d3be97">
+        <flow-ref doc:name="Flow Reference" doc:id="68762ad9-8dc4-4ad3-95d7-b1a98bc0e2ac" name="create-users-subflow" />
+        <error-handler ref="app-error-handler" />
+    </flow>
+</mule>
