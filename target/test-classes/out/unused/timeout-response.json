@@ -1,8 +1,0 @@
-{
-  "error": {
-    "status": "504",
-    "code": "TIMEOUT",
-    "title": "Timeout",
-    "details": "Timeout exceeded"
-  }
-}

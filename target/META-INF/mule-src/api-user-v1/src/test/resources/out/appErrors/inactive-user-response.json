@@ -1,8 +1,0 @@
-{
-    "error": {
-        "status": "404",
-        "code": "INACTIVE_USER",
-        "title": "User is not active",
-        "details": "User with the given username is not active"
-    }
-}

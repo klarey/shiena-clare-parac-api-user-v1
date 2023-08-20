@@ -1,8 +1,0 @@
-{
-  "error": {
-    "status": "406",
-    "code": "NOT_ACCEPTABLE",
-    "title": "Not accepted",
-    "details": "The provided 'accept' http-header does not match the response type"
-  }
-}

@@ -1,7 +1,0 @@
-%dw 2.0
-
-type auto_a61ca185_9323_4427_8851_0ba3a6a2ba9d_Output_Payload = {
-  user: Array<{    gender: String,     fullname: String,     age: Number,     dateRegistered: String,     username: String,     _?: Any  }>, 
-  _?: Any
-} {"label": "get-user-response"}
-

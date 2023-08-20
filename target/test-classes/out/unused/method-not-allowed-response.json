@@ -1,8 +1,0 @@
-{
-  "error": {
-    "status": "405",
-    "code": "METHOD_NOT_ALLOWED",
-    "title": "HTTP method not allowed",
-    "details": "The http method requested is not allowed"
-  }
-}

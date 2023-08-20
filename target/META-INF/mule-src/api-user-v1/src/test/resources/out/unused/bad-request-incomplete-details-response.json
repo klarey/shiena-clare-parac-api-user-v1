@@ -1,8 +1,0 @@
-{
-    "error": {
-        "status": "400",
-        "code": "BAD_REQUEST",
-        "title": "The request is invalid",
-        "details": "The input contains invalid data:/users/0 required key [username] not found"
-    }
-}

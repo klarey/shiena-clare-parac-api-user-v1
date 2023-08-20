@@ -1,8 +1,0 @@
-{
-  "error": {
-    "status": "501",
-    "code": "NOT_IMPLEMENTED",
-    "title": "Not implemented",
-    "details": "The requested method is not recognised"
-  }
-}
