@@ -15,3 +15,8 @@ json:
     application:
       name: "api-user"
       version: "v1"
+
+http:
+  host: "localhost"
+  port: "8081"
+  base: "/api/"

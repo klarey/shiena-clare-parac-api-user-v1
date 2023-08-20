@@ -11,7 +11,7 @@ http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/m
 				<raise-error doc:name="Raise Invalid Header Error" doc:id="824fdc57-70c7-4899-9bc3-55c605ced299" type="MULE:VALIDATION" description="Invalid code header"/>
 			</when>
 			<otherwise >
-				<json-logger:logger doc:name="Log valid code" doc:id="e40927c9-dc89-4328-a445-c9349699086e" config-ref="JSON_Logger_Config" message="#[&quot;Code header &quot; ++ attributes.headers.'code' ++ &quot; is valid.&quot;]"/>
+				<json-logger:logger doc:name="Log valid code" doc:id="e40927c9-dc89-4328-a445-c9349699086e" config-ref="JSON_Logger_Config" message="#[&quot;Code header &quot; ++ attributes.headers.'code' ++ &quot; is valid.&quot;]" tracePoint="FLOW" priority="DEBUG" category='#["esb.api-user-v1.validate-header-subflow.log-valid-code"]'/>
 			</otherwise>
 		</choice>
 	</sub-flow>

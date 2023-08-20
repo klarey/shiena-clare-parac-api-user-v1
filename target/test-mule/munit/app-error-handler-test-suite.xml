@@ -29,7 +29,7 @@
 		<munit:validation >
 			<munit-tools:assert-that doc:name="Assert that Status Code is 500" doc:id="3366c90e-ef68-497b-9e17-5809122decdc" expression="#[attributes.statusCode]" is='#[MunitTools::equalTo("500")]' />
 			<munit-tools:assert-that doc:name="Assert that Error Code is DB_CONNECTIVITY" doc:id="aaf1070f-6574-484a-9dcf-b532c541e359" expression="#[payload.error.code]" is="#[MunitTools::equalTo('SERVER_ERROR')]" />
-			<munit-tools:assert-equals doc:name="Assert equals" doc:id="6cfb5dc7-84b3-4ecd-9dc0-3e1ca112564c" actual="#[payload]" expected="#[readUrl('classpath://out/appErrors/default-error-response.json')]" />
+			<munit-tools:assert-equals doc:name="Assert that Response Payload is as Expected" doc:id="6cfb5dc7-84b3-4ecd-9dc0-3e1ca112564c" actual="#[payload]" expected="#[readUrl('classpath://out/appErrors/default-error-response.json')]" />
 		</munit:validation>
 	</munit:test>
 	<munit:test name="app-error-handler-test-suite-inactive-user-test" doc:id="f4db3a92-c089-45d3-9752-0b298c1042b1" description="Test">
@@ -53,7 +53,7 @@
 		<munit:validation >
 			<munit-tools:assert-that doc:name="Assert that Status Code is 404" doc:id="60cc6ec3-0d0f-4224-9c75-4f593f849cfb" expression="#[attributes.statusCode]" is='#[MunitTools::equalTo("404")]' />
 			<munit-tools:assert-that doc:name="Assert that Error Code is INACTIVE_USER" doc:id="53aceed9-63fe-4343-a3a6-283e1b2c87d6" expression="#[payload.error.code]" is="#[MunitTools::equalTo('INACTIVE_USER')]" />
-			<munit-tools:assert-equals doc:name="Assert equals" doc:id="65ac6973-6294-45e7-ad4a-222bab5bc326" actual="#[payload]" expected="#[readUrl('classpath://out/appErrors/inactive-user-response.json')]" />
+			<munit-tools:assert-equals doc:name="Assert that Response Payload is as Expected" doc:id="65ac6973-6294-45e7-ad4a-222bab5bc326" actual="#[payload]" expected="#[readUrl('classpath://out/appErrors/inactive-user-response.json')]" />
 		</munit:validation>
 	</munit:test>
 	<munit:test name="app-error-handler-test-suite-unauthorized-invalid-header-test" doc:id="efc16b4a-201d-4dbe-ab53-5131de2a5cf2" description="Test">
@@ -66,7 +66,7 @@
 		<munit:validation >
 			<munit-tools:assert-that doc:name="Assert that Status Code is 401" doc:id="bac3c927-9735-46fc-b1ab-6e80608818f9" expression="#[attributes.statusCode]" is='#[MunitTools::equalTo("401")]' />
 			<munit-tools:assert-that doc:name="Assert that Error Code is UNAUTHORIZED" doc:id="9abf1a5a-3cba-4055-8bfe-a9dac79a5242" expression="#[payload.error.code]" is="#[MunitTools::equalTo('UNAUTHORIZED')]" />
-			<munit-tools:assert-equals doc:name="Assert equals" doc:id="9b547f38-6b9f-49c8-8b46-91452fc2406b" actual="#[payload]" expected="#[readUrl('classpath://out/appErrors/unauthorized-invalid-header-response.json')]" />
+			<munit-tools:assert-equals doc:name="Assert that Response Payload is as Expected" doc:id="9b547f38-6b9f-49c8-8b46-91452fc2406b" actual="#[payload]" expected="#[readUrl('classpath://out/appErrors/unauthorized-invalid-header-response.json')]" />
 		</munit:validation>
 	</munit:test>
 	<munit:test name="app-error-handler-test-suite-user-details-not-found-test" doc:id="b55ca436-f54b-4abe-842a-ad0011d8b61e" description="Test">
@@ -80,7 +80,7 @@
 		<munit:validation >
 			<munit-tools:assert-that doc:name="Assert that Status Code is 404" doc:id="48e41ad5-dc49-4373-9943-1997ecfbf57e" expression="#[attributes.statusCode]" is='#[MunitTools::equalTo("404")]' />
 			<munit-tools:assert-that doc:name="Assert that Error Code is NOT_FOUND" doc:id="7fc246ec-5e36-4976-8a62-4a94eb290aad" expression="#[payload.error.code]" is="#[MunitTools::equalTo('NOT_FOUND')]" />
-			<munit-tools:assert-equals doc:name="Assert equals" doc:id="69801f9e-d571-4b99-a735-11e3a5a8c404" actual="#[payload]" expected="#[readUrl('classpath://out/appErrors/user-details-not-found-response.json')]" />
+			<munit-tools:assert-equals doc:name="Assert that Response Payload is as Expected" doc:id="69801f9e-d571-4b99-a735-11e3a5a8c404" actual="#[payload]" expected="#[readUrl('classpath://out/appErrors/user-details-not-found-response.json')]" />
 		</munit:validation>
 	</munit:test>
 	<munit:test name="app-error-handler-test-suite-user-not-found-test" doc:id="d4477e87-afd9-4f61-8dfb-fc6ad9d60d00" description="Test">
@@ -104,7 +104,7 @@
 		<munit:validation >
 			<munit-tools:assert-that doc:name="Assert that Status Code is 404" doc:id="14d605fb-b7c1-4a9e-84dc-b923d3dbc778" expression="#[attributes.statusCode]" is='#[MunitTools::equalTo("404")]' />
 			<munit-tools:assert-that doc:name="Assert that Error Code is NOT_FOUND" doc:id="ddfc5a33-d045-4f7d-a926-c6ef3e23d24e" expression="#[payload.error.code]" is="#[MunitTools::equalTo('NOT_FOUND')]" />
-			<munit-tools:assert-equals doc:name="Assert equals" doc:id="b54f0627-34a1-4cc1-a26c-1f8207d4a0df" actual="#[payload]" expected="#[readUrl('classpath://out/appErrors/user-not-found-response.json')]" />
+			<munit-tools:assert-equals doc:name="Assert that Response Payload is as Expected" doc:id="b54f0627-34a1-4cc1-a26c-1f8207d4a0df" actual="#[payload]" expected="#[readUrl('classpath://out/appErrors/user-not-found-response.json')]" />
 		</munit:validation>
 	</munit:test>
 	<munit:test name="app-error-handler-test-suite-no-user-retrieved-from-db-test" doc:id="6543d587-c72c-4bd3-a8cf-fcfbd88d48d9" description="Test">
@@ -128,7 +128,7 @@
 		<munit:validation >
 			<munit-tools:assert-that doc:name="Assert that Status Code is 404" doc:id="ec7b597a-80f7-46da-8d80-77a15325b01e" expression="#[attributes.statusCode]" is='#[MunitTools::equalTo("404")]' />
 			<munit-tools:assert-that doc:name="Assert that Error Code is NOT_FOUND" doc:id="d7fa05cc-8427-4ae0-8008-6f3c5abd2b3d" expression="#[payload.error.code]" is="#[MunitTools::equalTo('NOT_FOUND')]" />
-			<munit-tools:assert-equals doc:name="Assert equals" doc:id="4637e54c-edaf-49b1-9ea2-0141e1833cd0" actual="#[payload]" expected="#[readUrl('classpath://out/appErrors/user-not-found-response.json')]" />
+			<munit-tools:assert-equals doc:name="Assert that Response Payload is as Expected" doc:id="4637e54c-edaf-49b1-9ea2-0141e1833cd0" actual="#[payload]" expected="#[readUrl('classpath://out/appErrors/user-not-found-response.json')]" />
 		</munit:validation>
 	</munit:test>
 	<munit:test name="app-error-handler-test-suite-no-active-users-test" doc:id="4d396477-e316-4845-a60d-323d7a9a14e8" description="Test">
@@ -152,7 +152,7 @@
 		<munit:validation >
 			<munit-tools:assert-that doc:name="Assert that Status Code is 404" doc:id="e11dba67-a642-4e72-bd50-9da9c39780c1" expression="#[attributes.statusCode]" is='#[MunitTools::equalTo("404")]' />
 			<munit-tools:assert-that doc:name="Assert that Error Code is NOT_FOUND" doc:id="f1547fe0-9d2e-49b1-8f1a-3bcfa122b6f1" expression="#[payload.error.code]" is="#[MunitTools::equalTo('NOT_FOUND')]" />
-			<munit-tools:assert-equals doc:name="Assert equals" doc:id="b7abc2ad-5d4a-4769-921e-264b4ee98224" actual="#[payload]" expected="#[readUrl('classpath://out/appErrors/user-not-found-response.json')]" />
+			<munit-tools:assert-equals doc:name="Assert that Response Payload is as Expected" doc:id="b7abc2ad-5d4a-4769-921e-264b4ee98224" actual="#[payload]" expected="#[readUrl('classpath://out/appErrors/user-not-found-response.json')]" />
 		</munit:validation>
 	</munit:test>
 	<munit:test name="app-error-handler-test-suite-error-encountered-while-writing-to-db-test" doc:id="fb3af9da-6a47-44c1-bc85-e6261c195e03" description="Test">
@@ -175,7 +175,8 @@
 			<flow-ref doc:name="Flow-ref to create-users-subflow" doc:id="36df293f-ac61-4c55-8862-e8ab83e89bf2" name="post:\users:application\json:api-user-v1-config" />
 		</munit:execution>
 		<munit:validation >
-			<munit-tools:assert-equals doc:name="Assert equals" doc:id="48e6a83c-b6ec-470c-8f51-55943892711e" actual="#[payload]" expected="#[readUrl('classpath://in/create-users-success.json')]" />
+			<munit-tools:assert-that doc:name="Assert that Status Code is 200" doc:id="9066ea3a-7dee-4077-98d1-0045552bdc7e" expression="#[attributes.statusCode]" is='#[MunitTools::equalTo("200")]' />
+			<munit-tools:assert-equals doc:name="Assert that Response Payload is as Expected" doc:id="48e6a83c-b6ec-470c-8f51-55943892711e" actual="#[payload]" expected="#[readUrl('classpath://in/create-users-success.json')]" />
 		</munit:validation>
 	</munit:test>
 

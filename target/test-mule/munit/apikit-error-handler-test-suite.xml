@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
-	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xsi:schemaLocation="
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:munit="http://www.mulesoft.org/schema/mule/munit"
+	xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xsi:schemaLocation="
 		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
-		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
 	<munit:config name="apikit-error-handler-test-suite.xml" />
-	<munit:test name="apikit-error-handler-test-suite-not-acceptable-test" doc:id="a40e89d8-456f-4b59-998c-f03039208d70" description="Test" expectedErrorType="APIKIT:NOT_ACCEPTABLE">
+	<munit:test name="apikit-error-handler-test-suite-not-acceptable-test" doc:id="a40e89d8-456f-4b59-998c-f03039208d70" description="Test" expectedErrorType="HTTP:NOT_ACCEPTABLE">
+		<munit:enable-flow-sources >
+			<munit:enable-flow-source value="api-user-v1-main" />
+			<munit:enable-flow-source value="get:\users:api-user-v1-config" />
+		</munit:enable-flow-sources>
 		<munit:behavior >
 			<munit-tools:mock-when doc:name="Mock when APIKIT:NOT_ACCEPTABLE" doc:id="94633f16-6e38-4b09-98d7-5a931ad1de4f" processor="apikit:router" >
 				<munit-tools:with-attributes >
@@ -20,18 +25,14 @@
 			</munit-tools:mock-when>
 		</munit:behavior>
 		<munit:execution >
-			<munit:set-event doc:name="Set Event" doc:id="352b16eb-9cd2-47d9-9eea-06edc56b6d85" >
-				<munit:attributes value='#[{&#10;	"headers": {&#10;		"code": "aOEF3M2cEG0204NO"&#10;	}&#10;}]' />
-			</munit:set-event>
-			<flow-ref doc:name="Flow-ref to api-user-v1-main-flow" doc:id="7c6c8a02-62c3-44b9-8e95-12a91dd385fc" name="api-user-v1-main" />
+			<http:request method="GET" doc:name="GET /users" doc:id="e58cf343-09b2-4942-8a34-0f33fed3ebca" config-ref="HTTP_Request_configuration" path="users"/>
 		</munit:execution>
-		<munit:validation >
-			<munit-tools:assert-that doc:name="Assert that Status Code is 406" doc:id="a8fa9727-1535-4534-8e58-328f4c9b50a8" is='#[MunitTools::equalTo("406")]' expression="#[attributes.statusCode]" />
-			<munit-tools:assert-that doc:name="Assert that Error Code is NOT_ACCEPTABLE" doc:id="4742ecaa-333f-4929-9e16-01ad9901b91d" is="#[MunitTools::equalTo('NOT_ACCEPTABLE')]" expression="#[payload.error.code]" />
-			<munit-tools:assert-equals doc:name="Assert equals" doc:id="7eae77a7-6d05-4417-a7bd-e736245cec19" actual="#[payload]" expected="#[readUrl('classpath://out/apikitErrors/not-acceptable-response.json')]" />
-		</munit:validation>
 	</munit:test>
-	<munit:test name="apikit-error-handler-test-suite-http-timeout-test" doc:id="736fb803-b2df-43aa-8bab-ef487206b59a" expectedErrorType="HTTP:TIMEOUT">
+	<munit:test name="apikit-error-handler-test-suite-http-timeout-test" doc:id="736fb803-b2df-43aa-8bab-ef487206b59a" expectedErrorType="HTTP:GATEWAY_TIMEOUT">
+		<munit:enable-flow-sources >
+			<munit:enable-flow-source value="api-user-v1-main" />
+			<munit:enable-flow-source value="get:\users:api-user-v1-config" />
+		</munit:enable-flow-sources>
 		<munit:behavior >
 			<munit-tools:mock-when doc:name="Mock when HTTP:TIMEOUT" doc:id="a4ae250f-6642-43ca-8ebd-9399ab2c0fb8" processor="apikit:router" >
 				<munit-tools:with-attributes >
@@ -43,18 +44,14 @@
 			</munit-tools:mock-when>
 		</munit:behavior>
 		<munit:execution >
-			<munit:set-event doc:name="Set Event" doc:id="50a9f8a5-68b9-4f18-8bdb-c2cd6be9354b" >
-				<munit:attributes value='#[{&#10;	"headers": {&#10;		"code": "aOEF3M2cEG0204NO"&#10;	}&#10;}]' />
-			</munit:set-event>
-			<flow-ref doc:name="Flow-ref to api-user-v1-main-flow" doc:id="0641ef4d-3733-4b37-a188-d7dd35194897" name="api-user-v1-main" />
+			<http:request method="GET" doc:name="GET /users" doc:id="8454768f-7987-46e7-9820-807a8bd7c97c" config-ref="HTTP_Request_configuration" path="users" />
 		</munit:execution>
-		<munit:validation >
-			<munit-tools:assert-that doc:name="Assert that Status Code is 504" doc:id="dc6a2080-63d9-4b9a-99f8-7750e0c83e11" expression="#[attributes.statusCode]" is='#[MunitTools::equalTo("504")]' />
-			<munit-tools:assert-that doc:name="Assert that Error Code is NOT_ACCEPTABLE" doc:id="23e108ef-0841-48c5-9d0e-3568c28be652" expression="#[payload.error.code]" is="#[MunitTools::equalTo('TIMEOUT')]" />
-			<munit-tools:assert-equals doc:name="Assert equals" doc:id="e9aedf3a-98b4-4ae5-bde5-3e086851f8e7" actual="#[payload]" expected="#[readUrl('classpath://out/apikitErrors/timeout-response.json')]" />
-		</munit:validation>
 	</munit:test>
-	<munit:test name="apikit-error-handler-test-suite-not-implemented-test" doc:id="f473876f-0942-423b-9965-47eccdc407a5" description="Test" expectedErrorType="APIKIT:NOT_IMPLEMENTED">
+	<munit:test name="apikit-error-handler-test-suite-not-implemented-test" doc:id="f473876f-0942-423b-9965-47eccdc407a5" description="Test" expectedErrorType="MULE:UNKNOWN">
+		<munit:enable-flow-sources >
+			<munit:enable-flow-source value="api-user-v1-main" />
+			<munit:enable-flow-source value="get:\users:api-user-v1-config" />
+		</munit:enable-flow-sources>
 		<munit:behavior >
 			<munit-tools:mock-when doc:name="Mock when APIKIT:NOT_IMPLEMENTED" doc:id="f35eb086-7de6-44fb-a73a-1dcacf1a1651" processor="apikit:router" >
 				<munit-tools:with-attributes >
@@ -66,18 +63,14 @@
 			</munit-tools:mock-when>
 		</munit:behavior>
 		<munit:execution >
-			<munit:set-event doc:name="Set Event" doc:id="34ef3c46-b326-4d4a-8742-efd95f50223a" >
-				<munit:attributes value='#[{&#10;	"headers": {&#10;		"code": "aOEF3M2cEG0204NO"&#10;	}&#10;}]' />
-			</munit:set-event>
-			<flow-ref doc:name="Flow-ref to api-user-v1-main-flow" doc:id="9b7b0f96-fe35-4dbe-8f2a-343745674676" name="api-user-v1-main" />
+			<http:request method="GET" doc:name="GET /users" doc:id="d6e18889-cb01-49e7-8aac-bc9b18de1e61" config-ref="HTTP_Request_configuration" path="users" />
 		</munit:execution>
-		<munit:validation >
-			<munit-tools:assert-that doc:name="Assert that Status Code is 501" doc:id="35eb888e-472c-4931-ae9d-811eaa1d36b5" expression="#[attributes.statusCode]" is='#[MunitTools::equalTo("501")]' />
-			<munit-tools:assert-that doc:name="Assert that Error Code is NOT_IMPLEMENTED" doc:id="9e8dbbb5-91cd-4927-885b-8d893e8595e7" expression="#[payload.error.code]" is="#[MunitTools::equalTo('NOT_IMPLEMENTED')]" />
-			<munit-tools:assert-equals doc:name="Assert equals" doc:id="a3b5abf6-cbb0-432e-800f-31c67899e4a0" actual="#[payload]" expected="#[readUrl('classpath://out/apikitErrors/not-implemented-response.json')]" />
-		</munit:validation>
 	</munit:test>
-	<munit:test name="apikit-error-handler-test-suite-method-not-allowed-test" doc:id="592929b1-df36-41b6-ab23-54e572de0169" expectedErrorType="APIKIT:METHOD_NOT_ALLOWED">
+	<munit:test name="apikit-error-handler-test-suite-method-not-allowed-test" doc:id="592929b1-df36-41b6-ab23-54e572de0169" expectedErrorType="HTTP:METHOD_NOT_ALLOWED">
+		<munit:enable-flow-sources >
+			<munit:enable-flow-source value="api-user-v1-main" />
+			<munit:enable-flow-source value="get:\users:api-user-v1-config" />
+		</munit:enable-flow-sources>
 		<munit:behavior >
 			<munit-tools:mock-when doc:name="Mock when APIKIT:METHOD_NOT_ALLOWED" doc:id="9fce2440-550e-43f3-b568-804e2f46c6c9" processor="apikit:router" >
 				<munit-tools:with-attributes >
@@ -89,18 +82,14 @@
 			</munit-tools:mock-when>
 		</munit:behavior>
 		<munit:execution >
-			<munit:set-event doc:name="Set Event" doc:id="cbe510f0-5642-4d37-b7b6-1601ef95509e" >
-				<munit:attributes value='#[{&#10;	"headers": {&#10;		"code": "aOEF3M2cEG0204NO"&#10;	}&#10;}]' />
-			</munit:set-event>
-			<flow-ref doc:name="Flow-ref to api-user-v1-main-flow" doc:id="c78d7bc2-ea94-4d8f-b0da-409b4800aa8b" name="api-user-v1-main" />
+			<http:request method="GET" doc:name="GET /users" doc:id="4c531152-4e50-4ec2-9068-5bcc073e3920" config-ref="HTTP_Request_configuration" path="users" />
 		</munit:execution>
-		<munit:validation >
-			<munit-tools:assert-that doc:name="Assert that Status Code is 405" doc:id="84bb6b3b-d447-4a1a-97df-06002b41ae7b" is='#[MunitTools::equalTo("405")]' expression="#[attributes.statusCode]" />
-			<munit-tools:assert-that doc:name="Assert that Error Code is METHOD_NOT_ALLOWED" doc:id="e56b08f8-09c1-4b7a-83d9-8f8468a2614a" is="#[MunitTools::equalTo('METHOD_NOT_ALLOWED')]" expression="#[payload.error.code]" />
-			<munit-tools:assert-equals doc:name="Assert equals" doc:id="dd48c2f2-84e9-47f4-b109-493ddee04961" actual="#[payload]" expected="#[readUrl('classpath://out/apikitErrors/method-not-allowed-response.json')]" />
-		</munit:validation>
 	</munit:test>
-	<munit:test name="apikit-error-handler-test-suite-not-found-test" doc:id="6410be1f-d76c-4aeb-be75-c39ffe005202" description="Test" expectedErrorType="APIKIT:NOT_FOUND">
+	<munit:test name="apikit-error-handler-test-suite-not-found-test" doc:id="6410be1f-d76c-4aeb-be75-c39ffe005202" description="Test" expectedErrorType="HTTP:NOT_FOUND">
+		<munit:enable-flow-sources >
+			<munit:enable-flow-source value="api-user-v1-main" />
+			<munit:enable-flow-source value="get:\users:api-user-v1-config" />
+		</munit:enable-flow-sources>
 		<munit:behavior >
 			<munit-tools:mock-when doc:name="Mock when APIKIT:NOT_FOUND" doc:id="9a50085b-e421-459b-8f15-f388136d5be3" processor="apikit:router" >
 				<munit-tools:with-attributes >
@@ -112,18 +101,14 @@
 			</munit-tools:mock-when>
 		</munit:behavior>
 		<munit:execution >
-			<munit:set-event doc:name="Set Event" doc:id="3ac70e58-448d-44be-825e-9f3d382bc398" >
-				<munit:attributes value='#[{&#10;	"headers": {&#10;		"code": "aOEF3M2cEG0204NO"&#10;	}&#10;}]' />
-			</munit:set-event>
-			<flow-ref doc:name="Flow-ref to api-user-v1-main-flow" doc:id="e4569c63-d2fd-40f2-ad09-ac673e1bc561" name="api-user-v1-main" />
+			<http:request method="GET" doc:name="GET /users" doc:id="bbc9aff4-d5b8-4f01-8aca-71f647bb8b23" config-ref="HTTP_Request_configuration" path="users" />
 		</munit:execution>
-		<munit:validation >
-			<munit-tools:assert-that doc:name="Assert that Status Code is 404" doc:id="317e02b4-bf7b-41e0-802f-7be809b5b179" expression="#[attributes.statusCode]" is='#[MunitTools::equalTo("404")]' />
-			<munit-tools:assert-that doc:name="Assert that Error Code is NOT_FOUND" doc:id="279deb48-0a63-4647-b0db-61f8aa2f5a1c" expression="#[payload.error.code]" is="#[MunitTools::equalTo('NOT_FOUND')]" />
-			<munit-tools:assert-equals doc:name="Assert equals" doc:id="130b81c7-f5ba-4780-a0d5-6a27d9eb2cb7" actual="#[payload]" expected="#[readUrl('classpath://out/apikitErrors/not-found-response.json')]" />
-		</munit:validation>
 	</munit:test>
-	<munit:test name="apikit-error-handler-test-suite-unsupported-media-type-test" doc:id="3a48cc4e-63ef-4a5d-b18d-c6f9f7e2a009" expectedErrorType="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+	<munit:test name="apikit-error-handler-test-suite-unsupported-media-type-test" doc:id="3a48cc4e-63ef-4a5d-b18d-c6f9f7e2a009" expectedErrorType="HTTP:UNSUPPORTED_MEDIA_TYPE">
+		<munit:enable-flow-sources >
+			<munit:enable-flow-source value="api-user-v1-main" />
+			<munit:enable-flow-source value="get:\users:api-user-v1-config" />
+		</munit:enable-flow-sources>
 		<munit:behavior >
 			<munit-tools:mock-when doc:name="Mock when APIKIT:UNSUPPORTED_MEDIA_TYPE" doc:id="5a2baba6-8343-47d8-af17-54224500a7ae" processor="apikit:router" >
 				<munit-tools:with-attributes >
@@ -135,18 +120,14 @@
 			</munit-tools:mock-when>
 		</munit:behavior>
 		<munit:execution >
-			<munit:set-event doc:name="Set Event" doc:id="7d221fcf-70ea-44a1-b56e-08612ee4eb82" >
-				<munit:attributes value='#[{&#10;	"headers": {&#10;		"code": "aOEF3M2cEG0204NO"&#10;	}&#10;}]' />
-			</munit:set-event>
-			<flow-ref doc:name="Flow-ref to api-user-v1-main-flow" doc:id="0cc0fbe5-5128-4efc-9276-5920739fd446" name="api-user-v1-main" />
+			<http:request method="GET" doc:name="GET /users" doc:id="4191ce80-5adb-49b8-959e-b0f5cf6b772d" config-ref="HTTP_Request_configuration" path="users" />
 		</munit:execution>
-		<munit:validation >
-			<munit-tools:assert-that doc:name="Assert that Status Code is 415" doc:id="a97364ce-af4d-45f6-803a-e2db7a1f94eb" is='#[MunitTools::equalTo("415")]' expression="#[attributes.statusCode]" />
-			<munit-tools:assert-that doc:name="Assert that Error Code is MEDIA_TYPE_UNSUPPORTED" doc:id="6068f09e-9cd0-47db-b02a-3f49a8e6d113" is="#[MunitTools::equalTo('MEDIA_TYPE_UNSUPPORTED')]" expression="#[payload.error.code]" />
-			<munit-tools:assert-equals doc:name="Assert equals" doc:id="22ab3410-4d7a-47e8-9428-cc9cf99618da" actual="#[payload]" expected="#[readUrl('classpath://out/apikitErrors/unsupported-media-type-response.json')]" />
-		</munit:validation>
 	</munit:test>
-	<munit:test name="apikit-error-handler-test-suite-default-error-test" doc:id="23a5e87e-d7f6-46c2-89a9-4a0caa6f6f57" expectedErrorType="HTTP:BAD_GATEWAY">
+	<munit:test name="apikit-error-handler-test-suite-default-error-test" doc:id="23a5e87e-d7f6-46c2-89a9-4a0caa6f6f57" expectedErrorType="HTTP:INTERNAL_SERVER_ERROR">
+		<munit:enable-flow-sources >
+			<munit:enable-flow-source value="api-user-v1-main" />
+			<munit:enable-flow-source value="get:\users:api-user-v1-config" />
+		</munit:enable-flow-sources>
 		<munit:behavior >
 			<munit-tools:mock-when doc:name="Mock when HTTP:BAD_GATEWAY" doc:id="61e8ad93-afc8-4050-aaf6-480d16297ed5" processor="apikit:router" >
 				<munit-tools:with-attributes >
@@ -158,105 +139,88 @@
 			</munit-tools:mock-when>
 		</munit:behavior>
 		<munit:execution >
-			<munit:set-event doc:name="Set Event" doc:id="46df4f1f-835b-4d85-a6df-2ee44af72bdc" >
-				<munit:attributes value='#[{&#10;	"headers": {&#10;		"code": "aOEF3M2cEG0204NO"&#10;	}&#10;}]' />
-			</munit:set-event>
-			<flow-ref doc:name="Flow-ref to api-user-v1-main-flow" doc:id="a973d055-ebdc-4703-ae27-ed3ed866e879" name="api-user-v1-main" />
+			<http:request method="GET" doc:name="GET /users" doc:id="54264041-89f9-4944-b452-62102a467e27" config-ref="HTTP_Request_configuration" path="users" />
 		</munit:execution>
-		<munit:validation >
-			<munit-tools:assert-that doc:name="Assert that Status Code is 500" doc:id="bc8bfbf5-3286-4575-8403-7ac1520f6e44" is='#[MunitTools::equalTo("500")]' expression="#[attributes.statusCode]" />
-			<munit-tools:assert-that doc:name="Assert that Error Code is SERVER_ERROR" doc:id="f7fb5328-8548-4df7-86b1-d9c955883ba7" is="#[MunitTools::equalTo('SERVER_ERROR')]" expression="#[payload.error.code]" />
-			<munit-tools:assert-equals doc:name="Assert equals" doc:id="72a1df29-e79a-47b6-a67d-150de11e5adb" actual="#[payload]" expected="#[readUrl('classpath://out/apikitErrors/default-error-response.json')]" />
-		</munit:validation>
 	</munit:test>
-	<munit:test name="apikit-error-handler-test-suite-null-header-test" doc:id="6139c2b6-9da5-4f27-9495-afc1430862a7" expectedErrorType="APIKIT:BAD_REQUEST">
-		<munit:behavior >
-			<munit-tools:mock-when doc:name="Mock when APIKIT:BAD_REQUEST" doc:id="3f9d63ad-d396-473b-b440-2eb416fdf171" processor="apikit:router" >
-				<munit-tools:with-attributes >
-					<munit-tools:with-attribute whereValue="api-user-v1-config" attributeName="config-ref" />
-				</munit-tools:with-attributes>
-				<munit-tools:then-return >
-					<munit-tools:error typeId="APIKIT:BAD_REQUEST" />
-				</munit-tools:then-return>
-			</munit-tools:mock-when>
-		</munit:behavior>
+	<munit:test name="apikit-error-handler-test-suite-null-header-test" doc:id="a0a2b958-2b60-40ca-91e4-c123349d91e5" expectedErrorType="HTTP:UNAUTHORIZED">
+		<munit:enable-flow-sources >
+			<munit:enable-flow-source value="api-user-v1-main" />
+			<munit:enable-flow-source value="get:\users:api-user-v1-config" />
+		</munit:enable-flow-sources>
 		<munit:execution >
-			<flow-ref doc:name="Flow-ref to api-user-v1-main-flow" doc:id="1f92ca5b-871d-488e-bcee-c9e5354ad7b9" name="api-user-v1-main" />
+			<http:request method="GET" doc:name="GET /users" doc:id="35b74dad-7f48-4aea-8335-de74b1dfcab9" config-ref="HTTP_Request_configuration" path="users" />
 		</munit:execution>
-		<munit:validation >
-			<munit-tools:assert-that doc:name="Assert that Status Code is 401" doc:id="ed496148-08f5-478a-a642-d8987e932d15" is='#[MunitTools::equalTo("401")]' expression="#[attributes.statusCode]" />
-			<munit-tools:assert-that doc:name="Assert that Error Code is UNAUTHORIZED" doc:id="f3c5d351-6960-4706-8c5c-3ff554040971" is="#[MunitTools::equalTo('UNAUTHORIZED')]" expression="#[payload.error.code]" />
-			<munit-tools:assert-equals doc:name="Assert equals" doc:id="0927c18f-cdf5-4e87-8e82-651a038d0c0d" actual="#[payload]" expected="#[readUrl('classpath://out/apikitErrors/unauthorized-null-header-response.json')]" />
-		</munit:validation>
 	</munit:test>
-	<munit:test name="apikit-error-handler-test-suite-bad-request-empty-username-field-test" doc:id="eee812bf-1f7e-4aae-8940-6b395cb226d6" description="Test" expectedErrorType="APIKIT:BAD_REQUEST">
-		<munit:behavior>
-			<munit-tools:mock-when doc:name="Mock when APIKIT:BAD_REQUEST" doc:id="1b9e2239-2441-4c1f-af14-d5f41f58c26a" processor="apikit:router">
-				<munit-tools:with-attributes>
-					<munit-tools:with-attribute whereValue="api-user-v1-config" attributeName="config-ref" />
-				</munit-tools:with-attributes>
-				<munit-tools:then-return>
-					<munit-tools:error typeId="APIKIT:BAD_REQUEST" />
-				</munit-tools:then-return>
-			</munit-tools:mock-when>
-		</munit:behavior>
-		<munit:execution>
-			<munit:set-event doc:name="Set Event" doc:id="5aba3419-149b-4661-be93-9fafdba7d6b1" >
-				<munit:attributes value='#[{&#10;	"headers": {&#10;		"code": "aOEF3M2cEG0204NO"&#10;	}&#10;}]' />
-			</munit:set-event>
-			<flow-ref doc:name="Flow-ref to api-user-v1-main-flow" doc:id="b0eaae5a-c742-4951-b7ce-790580acca3b" name="api-user-v1-main" />
-		</munit:execution>
-		<munit:validation>
-			<munit-tools:assert-that doc:name="Assert that Status Code is 400" doc:id="50a3d5aa-2132-41a8-8884-f870ee23f7c8" expression="#[attributes.statusCode]" is='#[MunitTools::equalTo("400")]' />
-			<munit-tools:assert-that doc:name="Assert that Error Code is BAD_REQUEST" doc:id="bdd39dc2-6d55-4b1a-9883-8b8fc3172873" expression="#[payload.error.code]" is="#[MunitTools::equalTo('BAD_REQUEST')]" />
-			<munit-tools:assert-equals doc:name="Assert equals" doc:id="2ce58222-bf3d-462a-ad02-ac3e873bbc02" actual="#[payload]" expected="#[readUrl('classpath://out/apikitErrors/bad-request-empty-username-field-response.json')]" />
-		</munit:validation>
-	</munit:test>
-	<munit:test name="apikit-error-handler-test-suite-bad-request-incomplete-details-test" doc:id="9098e3d5-77fe-45ee-8933-9ee1caf8212c" description="Test" expectedErrorType="APIKIT:BAD_REQUEST">
-		<munit:behavior >
-			<munit-tools:mock-when doc:name="Mock when APIKIT:BAD_REQUEST" doc:id="347a67a4-4004-4368-b8bc-3093e0e55041" processor="apikit:router" >
-				<munit-tools:with-attributes >
-					<munit-tools:with-attribute whereValue="api-user-v1-config" attributeName="config-ref" />
-				</munit-tools:with-attributes>
-				<munit-tools:then-return >
-					<munit-tools:error typeId="APIKIT:BAD_REQUEST" />
-				</munit-tools:then-return>
-			</munit-tools:mock-when>
-		</munit:behavior>
+	<munit:test name="apikit-error-handler-test-suite-post-users-bad-request-empty-username-field-test" doc:id="cb354a5c-842e-4ca8-a2e4-db8350be914a" description="Test" expectedErrorType="HTTP:BAD_REQUEST">
+		<munit:enable-flow-sources >
+			<munit:enable-flow-source value="api-user-v1-main" />
+			<munit:enable-flow-source value="post:\users:application\json:api-user-v1-config" />
+		</munit:enable-flow-sources>
 		<munit:execution >
-			<munit:set-event doc:name="Set Event" doc:id="93bb42c2-1f59-4474-b097-a06ceda69eb9" >
-				<munit:attributes value='#[{&#10;	"headers": {&#10;		"code": "aOEF3M2cEG0204NO"&#10;	}&#10;}]' />
-			</munit:set-event>
-			<flow-ref doc:name="Flow-ref to api-user-v1-main-flow" doc:id="dfb12def-00af-4e92-8289-10cc0d1b8962" name="api-user-v1-main" />
+			<http:request method="POST" doc:name="POST /users" doc:id="7e94e9f7-a8be-4877-8458-7f440e3d9ba8" config-ref="HTTP_Request_configuration" path="users" >
+				<http:body ><![CDATA[#[output application/json
+---
+{
+	"users": [
+		{
+            "username": "",
+            "fullname": "Derk Fern",
+            "birthday": "02-05-1994",
+            "gender": "male",
+            "dateRegistered": "20-08-2021"
+        }
+	]
+}]]]></http:body>
+				<http:headers ><![CDATA[#[output application/java
+---
+{
+	"code" : "aOEF3M2cEG0204NO"
+}]]]></http:headers>
+			</http:request>
 		</munit:execution>
-		<munit:validation >
-			<munit-tools:assert-that doc:name="Assert that Status Code is 400" doc:id="927a99d4-4b6d-4418-b663-6968231cf9e7" expression="#[attributes.statusCode]" is='#[MunitTools::equalTo("400")]' />
-			<munit-tools:assert-that doc:name="Assert that Error Code is BAD_REQUEST" doc:id="fa45c020-ba32-4af9-9b0c-297099cd36f3" expression="#[payload.error.code]" is="#[MunitTools::equalTo('BAD_REQUEST')]" />
-			<munit-tools:assert-equals doc:name="Assert equals" doc:id="dbc00a43-e37c-4782-9244-906c0d9f378e" actual="#[payload]" expected="#[readUrl('classpath://out/apikitErrors/bad-request-incomplete-details-response.json')]" />
-		</munit:validation>
 	</munit:test>
-	<munit:test name="apikit-error-handler-test-suite-bad-request-null-username-test" doc:id="8515d207-46c9-4ca0-b46d-c940f5849f8e" description="Test" expectedErrorType="APIKIT:BAD_REQUEST">
-		<munit:behavior >
-			<munit-tools:mock-when doc:name="Mock when APIKIT:BAD_REQUEST" doc:id="bb07af6d-4266-4f96-b78a-5ef5cd69be2d" processor="apikit:router" >
-				<munit-tools:with-attributes >
-					<munit-tools:with-attribute whereValue="api-user-v1-config" attributeName="config-ref" />
-				</munit-tools:with-attributes>
-				<munit-tools:then-return >
-					<munit-tools:error typeId="APIKIT:BAD_REQUEST" />
-				</munit-tools:then-return>
-			</munit-tools:mock-when>
-		</munit:behavior>
+	<munit:test name="apikit-error-handler-test-suite-post-users-bad-request-incomplete-details-test" doc:id="5df0560c-6fcb-47ed-a8c9-937f5ad153af" description="Test" expectedErrorType="HTTP:BAD_REQUEST">
+		<munit:enable-flow-sources >
+			<munit:enable-flow-source value="api-user-v1-main" />
+			<munit:enable-flow-source value="post:\users:application\json:api-user-v1-config" />
+		</munit:enable-flow-sources>
 		<munit:execution >
-			<munit:set-event doc:name="Set Event" doc:id="996ae1b5-2162-4746-8297-74189334e2e8">
-				<munit:attributes value='#[{&#10;	"headers": {&#10;		"code": "aOEF3M2cEG0204NO"&#10;	}&#10;}]' />
-			</munit:set-event>
-			<flow-ref doc:name="Flow-ref to api-user-v1-main-flow" doc:id="6f56bbaf-e2f4-42f4-bdc2-8c5d94fdd097" name="api-user-v1-main" />
+			<http:request method="POST" doc:name="POST /users" doc:id="7e01534c-81bf-4754-9537-1bcff93d8c0f" config-ref="HTTP_Request_configuration" path="users" >
+				<http:body ><![CDATA[#[output application/json
+---
+{
+	"users": [
+		{
+            "usernameTest": "derk",
+            "fullname": "Derk Fern",
+            "birthday": "02-05-1994",
+            "gender": "male",
+            "dateRegistered": "20-08-2021"
+        }
+	]
+}]]]></http:body>
+				<http:headers ><![CDATA[#[output application/java
+---
+{
+	"code" : "aOEF3M2cEG0204NO"
+}]]]></http:headers>
+			</http:request>
 		</munit:execution>
-		<munit:validation >
-			<munit-tools:assert-that doc:name="Assert that Status Code is 400" doc:id="d3862433-26fb-47b3-affd-d06b6e70aab7" expression="#[attributes.statusCode]" is='#[MunitTools::equalTo("400")]' />
-			<munit-tools:assert-that doc:name="Assert that Error Code is BAD_REQUEST" doc:id="548e4719-e6d4-47dc-8893-5cbd20da94d8" expression="#[payload.error.code]" is="#[MunitTools::equalTo('BAD_REQUEST')]" />
-			<munit-tools:assert-equals doc:name="Assert equals" doc:id="3e072470-84a9-447d-bbdc-546b9052eb5c" actual="#[payload]" expected="#[readUrl('classpath://out/apikitErrors/bad-request-null-username-response.json')]" />
-		</munit:validation>
+	</munit:test>
+	<munit:test name="apikit-error-handler-test-suite-get-user-by-username-bad-request-null-username-test" doc:id="f24c3998-ec26-4d79-99f1-4e31223961c9" description="Test" expectedErrorType="HTTP:BAD_REQUEST">
+		<munit:enable-flow-sources >
+			<munit:enable-flow-source value="api-user-v1-main" />
+			<munit:enable-flow-source value="get:\users\(username):api-user-v1-config" />
+		</munit:enable-flow-sources>
+		<munit:execution >
+			<http:request method="GET" doc:name="GET /users by username" doc:id="40acae72-0c9e-4084-9382-c116d0433e9a" config-ref="HTTP_Request_configuration" path="users/" >
+				<http:headers ><![CDATA[#[output application/java
+---
+{
+	"code" : "aOEF3M2cEG0204NO"
+}]]]></http:headers>
+			</http:request>
+		</munit:execution>
 	</munit:test>
 
 </mule>

@@ -19,4 +19,12 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 	</db:config>
 	<configuration-properties doc:name="Configuration properties" doc:id="21963f93-c470-41f5-aca1-6d91db247c93" file="properties/app-secrets.yaml" />
 	<configuration-properties doc:name="Configuration properties" doc:id="1cd11520-e222-4319-9cff-a14b3a5d4ed1" file="properties/app-constants.yaml" />
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="5abce6f9-4e51-4871-b202-83c8859ae799" basePath="${http.base}" >
+		<http:request-connection host="${http.host}" port="${http.port}" />
+	</http:request-config>
+	<apikit:config name="api-user-v1-config" api="api-user-v1.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <http:listener-config name="api-user-v1-httpListenerConfig">
+        <http:listener-connection host="${http.host}" port="${http.port}" />
+    </http:listener-config>
+    
 </mule>

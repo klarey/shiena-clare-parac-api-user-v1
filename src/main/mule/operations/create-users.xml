@@ -7,14 +7,14 @@ http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/m
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<sub-flow name="create-users-subflow" doc:id="5effec11-20ba-460e-be6c-e1d5781fd5fc" >
-		<json-logger:logger doc:name="Log Start" doc:id="6d9d711c-3f5a-4b0d-bf1d-c005656f878e" config-ref="JSON_Logger_Config" message='#["create-user-flow - START"]' />
+		<json-logger:logger doc:name="Log Start" doc:id="6d9d711c-3f5a-4b0d-bf1d-c005656f878e" config-ref="JSON_Logger_Config" message='#["create-user-flow - START"]' priority="DEBUG" category='#["esb.api-user-v1.create-users.start"]'/>
 		<flow-ref doc:name="Invoke Validate Header Flow" doc:id="307cdab8-92db-4865-abca-9ddbc530d4d6" name="validate-header-subflow" />
 		<choice doc:name="Choice" doc:id="60437a37-b4e3-40da-b67e-9a006e71d61a" >
 			<when expression="#[sizeOf(payload.users) != 0]" >
 				<async doc:name="Async" doc:id="36787908-7255-498f-9dfa-eb2cbcbb1734" >
 					<foreach doc:name="For Each" doc:id="7600283c-8b4a-42a9-87a1-89229715641d" collection="#[payload.users]" >
 						<try doc:name="Try" doc:id="e5c36f82-3478-4120-80f7-25ff8ac87cf9" >
-							<json-logger:logger doc:name="Log Start of Insert into Account and UserDetails" doc:id="c23b6107-98d9-438c-a4e8-09d38a39b6c0" config-ref="JSON_Logger_Config" message='#["Insert into Account and UserDetails - START"]'/>
+							<json-logger:logger doc:name="Log Start of Insert into Account and UserDetails" doc:id="c23b6107-98d9-438c-a4e8-09d38a39b6c0" config-ref="JSON_Logger_Config" message='#["Insert into Account and UserDetails - START"]' tracePoint="BEFORE_REQUEST" priority="DEBUG" category='#["esb.api-user-v1.create-users-subflow.db.request"]'/>
 							<db:stored-procedure doc:name="Insert into Account and UserDetails Tables" doc:id="31015bd2-d9e3-4a1b-bf8a-9fe0f511cea5" config-ref="Database_Config">
 								<db:sql ><![CDATA[call insert_into_Account_and_UserDetails(UUID_TO_BIN(UUID()), UUID_TO_BIN(UUID()), :userId, :fullname, :birthday, :gender,
  :username, 1, :date_registered)]]></db:sql>
@@ -29,10 +29,10 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 			else ""
 }]]]></db:input-parameters>
 							</db:stored-procedure>
-							<json-logger:logger doc:name="Log End of Insert into Account and UserDetails" doc:id="a24d5237-8e76-477b-a165-8519b7d0e085" config-ref="JSON_Logger_Config" message='#["Insert into Account and UserDetails - END"]' />
+							<json-logger:logger doc:name="Log End of Insert into Account and UserDetails" doc:id="a24d5237-8e76-477b-a165-8519b7d0e085" config-ref="JSON_Logger_Config" message='#["Insert into Account and UserDetails - END"]' tracePoint="AFTER_REQUEST" priority="DEBUG" category='#["esb.api-user-v1.create-users-subflow.db.response"]'/>
 							<error-handler >
 								<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="a6e44045-872c-46c2-b9c7-726af384cfd6" type="ANY" >
-									<json-logger:logger doc:name="Log Exception" doc:id="bcbd5f62-a5b4-431d-b998-a858a4c01bd1" config-ref="JSON_Logger_Config" message="#['Error encountered when writing to DB: ' ++ error.detailedDescription]" tracePoint="EXCEPTION" priority="ERROR" />
+									<json-logger:logger doc:name="Log Exception" doc:id="bcbd5f62-a5b4-431d-b998-a858a4c01bd1" config-ref="JSON_Logger_Config" message="#['Error encountered when writing to DB: ' ++ error.detailedDescription]" tracePoint="EXCEPTION" priority="ERROR" category='#["esb.api-user-v1.create-users-subflow.log-exception.error"]'/>
 								</on-error-continue>
 							</error-handler>
 						</try>
@@ -52,8 +52,14 @@ output application/json
 	"message": "Success",
 	"responseCode": "201"
 }]]></ee:set-payload>
+				<ee:set-attributes ><![CDATA[%dw 2.0
+output application/java
+---
+{
+	statusCode: "200"
+}]]></ee:set-attributes>
 			</ee:message>
 		</ee:transform>
-		<json-logger:logger doc:name="Log End" doc:id="cceb9b80-5ea7-4cbc-a79f-0bb21cac540d" config-ref="JSON_Logger_Config" message='#["create-user-flow - END"]' />
+		<json-logger:logger doc:name="Log End" doc:id="cceb9b80-5ea7-4cbc-a79f-0bb21cac540d" config-ref="JSON_Logger_Config" message='#["create-user-flow - END"]' tracePoint="END" priority="DEBUG" category='#["esb.api-user-v1.create-users.end"]'/>
 	</sub-flow>
 </mule>

@@ -1,0 +1,31 @@
+%dw 2.0
+
+type auto_33fede6d_4465_445e_ad42_c83e710baffd_Input_Attributes = {|
+  clientCertificate?: {|
+    publicKey?: {|  |}, 
+    "type"?: String, 
+    encoded?: Binary
+  |}, 
+  headers: {|
+    "X-TransactionID"?: String, 
+    "X-TrackingID"?: String, 
+    "X-SessionID"?: String, 
+    "X-CreationTime"?: String, 
+    "X-InitialSystem"?: String, 
+    "X-InitialComponent"?: String, 
+    "X-InitialOperation"?: String
+  |}, 
+  listenerPath: String, 
+  method: String, 
+  queryParams: {|  |}, 
+  queryString: String, 
+  relativePath: String, 
+  remoteAddress: String, 
+  requestPath: String, 
+  requestUri: String, 
+  scheme: String, 
+  uriParams: {|  |}, 
+  version: String, 
+  localAddress: String
+|}
+

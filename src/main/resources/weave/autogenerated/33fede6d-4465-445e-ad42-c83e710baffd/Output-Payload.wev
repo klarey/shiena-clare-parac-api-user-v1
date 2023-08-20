@@ -1,0 +1,7 @@
+%dw 2.0
+
+type auto_33fede6d_4465_445e_ad42_c83e710baffd_Output_Payload = {
+  message: String, 
+  _?: Any
+} {"label": "get-health-response"}
+

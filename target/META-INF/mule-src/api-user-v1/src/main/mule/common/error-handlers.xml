@@ -6,7 +6,7 @@
 http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<sub-flow name="set-exception-response-subflow" doc:id="9620166e-0231-4901-950c-1e77bc119930" >
-		<json-logger:logger doc:id="1b79d9fd-62a5-4cbf-a9d0-5de0fef503d0" config-ref="JSON_Logger_Config" message="#[error.detailedDescription]" doc:name="Log Exception" />
+		<json-logger:logger doc:id="1b79d9fd-62a5-4cbf-a9d0-5de0fef503d0" config-ref="JSON_Logger_Config" message="#[error.detailedDescription]" doc:name="Log Exception" tracePoint="EXCEPTION" priority="DEBUG" category='#["esb.api-user-v1.set-exception-response-subflow.log-exception.error"]'/>
 		<ee:transform doc:name="Map Exception Response Payload" doc:id="85f74a4b-86df-4db0-98d1-f090e511c9f3" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0

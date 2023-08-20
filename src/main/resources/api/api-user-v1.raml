@@ -15,6 +15,7 @@ types:
   get-users-response-data-type: !include /common/data-types/get-users-response.raml
   create-users-response-data-type: !include /common/data-types/create-users-response.raml
   create-users-request-data-type: !include /common/data-types/create-users-request.raml
+  Health: !include /common/data-types/get-health-response.raml
 
 
 /users:
@@ -65,3 +66,15 @@ types:
             application/json:
               type: get-users-response-data-type
               example: !include /examples/get-users-response.json
+/health:
+  get:
+    is:
+      - Errorable
+      - Trackable
+    description: Get API health
+    responses:
+      200:
+        body:
+          application/json:
+            type: Health
+            example: !include /examples/get-health-response.json

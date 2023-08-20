@@ -1,34 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:db="http://www.mulesoft.org/schema/mule/db"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:munit="http://www.mulesoft.org/schema/mule/munit"
-	xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools" xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xsi:schemaLocation="
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xsi:schemaLocation="
 		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
 		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd
-http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
 	<munit:config name="get-users-test-suite.xml" />
 	<munit:test name="get-users-test-suite-get-users-subflow-test" doc:id="3ab3c2bd-6ba3-470e-8952-71501641177d" description="Test">
+		<munit:enable-flow-sources >
+			<munit:enable-flow-source value="api-user-v1-main" />
+			<munit:enable-flow-source value="get:\users:api-user-v1-config" />
+		</munit:enable-flow-sources>
 		<munit:behavior >
-			<munit-tools:mock-when doc:name="Mock when" doc:id="64cf959b-75b7-4d63-870e-24194f82bb4c" processor="db:select">
+			<munit-tools:mock-when doc:name="Mock when DB returns all 3 active users" doc:id="64cf959b-75b7-4d63-870e-24194f82bb4c" processor="db:select">
 				<munit-tools:with-attributes >
 					<munit-tools:with-attribute whereValue="Select All Users" attributeName="doc:name" />
 					<munit-tools:with-attribute whereValue="d64987d7-bdb9-400d-a7ec-68d5d7ea44cb" attributeName="doc:id" />
 				</munit-tools:with-attributes>
 				<munit-tools:then-return >
-					<munit-tools:payload value="#[readUrl('classpath://out/mock/get-active-user-by-username-mock-db-response.json')]" mediaType="application/java" />
+					<munit-tools:payload value="#[readUrl('classpath://out/mock/get-all-active-users-mock-db-response.json')]" mediaType="application/java" />
 				</munit-tools:then-return>
 			</munit-tools:mock-when>
 		</munit:behavior>
 		<munit:execution >
-			<munit:set-event doc:name="Set Event" doc:id="33381014-66c4-40e9-8325-6dd3787b0ca7">
-				<munit:attributes value='#[{&#10;	"headers": {&#10;		"code": "aOEF3M2cEG0204NO"&#10;	}&#10;}]' />
-			</munit:set-event>
-			<flow-ref doc:name="Flow-ref to get-users-subflow" doc:id="e9c24315-c080-4f3f-bdc5-f2a6a2e3e375" name="get-users-subflow"/>
+			<http:request method="GET" doc:name="GET /users" doc:id="5a4a7970-b335-4e9a-b052-19f1bb2002df" config-ref="HTTP_Request_configuration" path="users">
+				<http:headers ><![CDATA[#[output application/java
+---
+{
+	"code" : "aOEF3M2cEG0204NO"
+}]]]></http:headers>
+			</http:request>
 		</munit:execution>
 		<munit:validation >
-			<munit-tools:assert-equals doc:name="Assert equals" doc:id="34e1c254-c1ef-42eb-85a9-fc8fb9553cb6" actual="#[payload]" expected="#[readUrl('classpath://out/get-users-success.json')]" />
+			<munit-tools:assert-that doc:name="Assert that Status Code is 200" doc:id="297c2401-6018-460c-aeb9-a5d87cdefe9f" expression="#[attributes.statusCode]" is='#[MunitTools::equalTo(200)]' />
+			<munit-tools:assert-equals doc:name="Assert that Response Payload is as Expected" doc:id="34e1c254-c1ef-42eb-85a9-fc8fb9553cb6" actual="#[payload]" expected="#[readUrl('classpath://out/get-users-success.json')]" />
 		</munit:validation>
 	</munit:test>
 
