@@ -8,29 +8,31 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<sub-flow name="get-user-by-username-subflow" doc:id="a61ca185-9323-4427-8851-0ba3a6a2ba9d" >
 		<json-logger:logger doc:name="Log Start" doc:id="5142380c-7d7f-4407-9b76-62e0524d0467" config-ref="JSON_Logger_Config" message='#["get-user-by-username-flow - START"]' priority="DEBUG" category='#["esb.api-user-v1.get-user-by-username.start"]'/>
-		<flow-ref doc:name="Invoke Validate Header Flow" doc:id="bb1f3421-b757-4215-9308-e5e75d20f72a" name="validate-header-subflow"/>
-		<json-logger:logger doc:name="Log Start of Select Specific User" doc:id="78e6fb1b-bd84-4358-8f4d-88d45a26b7c6" config-ref="JSON_Logger_Config" message='#["Select Specific User - START"]' tracePoint="BEFORE_REQUEST" priority="DEBUG" category='#["esb.api-user-v1.get-user-by-username-subflow.db.request"]'/>
-		<db:select doc:name="Select Specific User" doc:id="df0b06be-748c-4d85-bfff-7b5309f8586a" config-ref="Database_Config" queryTimeout="30">
-			<db:sql><![CDATA[SELECT Account.userId, username, active, date_registered, fullname, birthday, gender
-FROM Account 
-INNER JOIN UserDetails
-ON Account.userId = UserDetails.userId
-WHERE Account.username = :username]]></db:sql>
-			<db:input-parameters><![CDATA[#[{username: attributes.uriParams.'username'}]]]></db:input-parameters>
-		</db:select>
-		<json-logger:logger doc:name="Log End of Select Specific User" doc:id="dda91e99-81e6-44dc-8494-74297bcd6081" config-ref="JSON_Logger_Config" message='#["Select Specific User - END"]' tracePoint="AFTER_REQUEST" priority="DEBUG" category='#["esb.api-user-v1.get-user-by-username-subflow.db.response"]'/>
-		<set-variable value="#[output application/json&#10;---&#10;{}]" doc:name="Initialize output variable" doc:id="601ccc7c-ef6b-4a69-a154-50d2f516105b" variableName="output" />
+		<ee:transform doc:name="Set Variables output and query" doc:id="bb51683b-97f9-40d1-b8b8-8181e92da003">
+			<ee:message />
+			<ee:variables>
+				<ee:set-variable variableName="query"><![CDATA[%dw 2.0
+output application/java
+---
+p('db.select_specific_user_query')]]></ee:set-variable>
+				<ee:set-variable variableName="output"><![CDATA[%dw 2.0
+output application/json
+---
+{}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="Invoke Select from DB Subflow" doc:id="fcf1a9be-af8f-47d5-bf7d-ee1b4dbadab4" name="select-from-db-subflow"/>
 		<choice doc:name="Choice" doc:id="23f90e01-5e0f-4ddf-b389-920d4fa5bbb3" >
 			<when expression="#[sizeOf(payload) != 0]" >
 				<choice doc:name="Choice" doc:id="73e960bc-1ad8-4b5f-b375-610dc4c164cd">
 					<when expression="#[payload.active[0] == true]">
-						<ee:transform doc:name="Map tempPayload" doc:id="afdf06eb-3f12-425e-babd-dc779e7460c0">
+						<ee:transform doc:name="Set payload and append to output variable" doc:id="afdf06eb-3f12-425e-babd-dc779e7460c0">
 						<ee:message>
-								<ee:set-payload resource="mappings/get-user-by-username-tempPayload-for-active-account.dwl" />
 						</ee:message>
-						<ee:variables />
+						<ee:variables >
+								<ee:set-variable resource="mappings/get-user-by-username-set-payload-for-active-account.dwl" variableName="output" />
+							</ee:variables>
 					</ee:transform>
-						<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;(vars."output" default{}) ++ (payload default{})]' doc:name="Append to output variable" doc:id="e8598320-e027-4fab-8601-c604370bd0d2" variableName="output" />
 					</when>
 					<otherwise >
 						<raise-error doc:name="Raise User is inactive Error" doc:id="40646491-692e-4565-abce-ee63ff47a387" type="USER:INACTIVE" description="User is inactive" />
@@ -38,7 +40,7 @@ WHERE Account.username = :username]]></db:sql>
 				</choice>
 			</when>
 			<otherwise >
-				<raise-error doc:name="Raise User not found Error" doc:id="f3cc0922-90ab-4b31-af02-2c6a874777f9" type="USER:NOT_FOUND" description="User not found" />
+				<raise-error doc:name="Raise User not found Error" doc:id="f3cc0922-90ab-4b31-af02-2c6a874777f9" type="USER:NOT_FOUND" description="User with the given username does not exist" />
 			</otherwise>
 		</choice>
 		<ee:transform doc:name="Set Response Payload" doc:id="3e8f8fb6-1bd3-4020-be7c-867ab5fe9b00" >

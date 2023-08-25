@@ -31,34 +31,34 @@ output application/java
 		<set-variable value="#[vars.errorStatus]" doc:name="Set httpStatus" doc:id="d1cfc2b8-9a1c-4c95-9d92-cb4bcfd82e12" variableName="httpStatus" />
 	</sub-flow>
 	<error-handler name="apikit-error-handler" doc:id="12fbe9f7-78f8-46fb-a5bb-64c674604a84" >
-		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="bf409483-b459-492e-8d53-4b572e0b6015" type="APIKIT:BAD_REQUEST" when="attributes.headers.'code' == null">
+<!-- [STUDIO:"On Error Propagate"]		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="bf409483-b459-492e-8d53-4b572e0b6015" type="APIKIT:BAD_REQUEST" when="attributes.headers.'code' == null">
 			<ee:transform doc:name="Set Variable - logCategory, errorStatus, errorTitle, errorCode, errorDetails" doc:id="87bd59bf-b332-449d-a301-2864c4db9042">
 				<ee:message />
 				<ee:variables>
 					<ee:set-variable variableName="logCategory"><![CDATA[%dw 2.0
 output application/java
----
-p('log.category.base') ++ '.unauthorized.error']]></ee:set-variable>
+&#45;&#45;-
+p('log.category.base') ++ '.unauthorized.error'&#93;&#93;></ee:set-variable>
 					<ee:set-variable variableName="errorStatus"><![CDATA[%dw 2.0
 output application/java
----
-p('error.apikit.unauthorized.statusCode')]]></ee:set-variable>
+&#45;&#45;-
+p('error.apikit.unauthorized.statusCode')&#93;&#93;></ee:set-variable>
 					<ee:set-variable variableName="errorTitle"><![CDATA[%dw 2.0
 output application/java
----
-p('error.apikit.unauthorized.title')]]></ee:set-variable>
+&#45;&#45;-
+p('error.apikit.unauthorized.title')&#93;&#93;></ee:set-variable>
 					<ee:set-variable variableName="errorCode"><![CDATA[%dw 2.0
 output application/java
----
-p('error.apikit.unauthorized.errorCode')]]></ee:set-variable>
+&#45;&#45;-
+p('error.apikit.unauthorized.errorCode')&#93;&#93;></ee:set-variable>
 					<ee:set-variable variableName="errorDetails"><![CDATA[%dw 2.0
 output application/java
----
-p('error.apikit.unauthorized.description') ++ ':' ++ (error.description default '')]]></ee:set-variable>
+&#45;&#45;-
+p('error.apikit.unauthorized.description') ++ ':' ++ (error.description default '')&#93;&#93;></ee:set-variable>
 				</ee:variables>
 			</ee:transform>
 			<flow-ref doc:name="Invoke Set Exception Response" doc:id="207dfd82-82d2-4d7d-afd4-281dda2b3b23" name="set-exception-response-subflow" />
-		</on-error-propagate>
+		</on-error-propagate> [STUDIO] -->
 		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="c5e7cb31-100d-4abc-80d9-99e1819479cd" type="HTTP:TIMEOUT">
 			<ee:transform doc:name="Set Variable - logCategory, errorStatus, errorTitle, errorCode, errorDetails" doc:id="0391c5a2-4b6d-44ca-a3f9-8e066e02f2c7">
 				<ee:variables>
@@ -233,23 +233,38 @@ p('error.apikit.notfound.description')]]></ee:set-variable>
 					<ee:set-variable variableName="logCategory"><![CDATA[%dw 2.0
 output application/java
 ---
-p('log.category.base') ++ '.bad-request.error']]></ee:set-variable>
+if (error.description contains "requestCode")
+	p('log.category.base') ++ '.unauthorized.error'
+else
+	p('log.category.base') ++ '.bad-request.error']]></ee:set-variable>
 					<ee:set-variable variableName="errorStatus"><![CDATA[%dw 2.0
 output application/java
 ---
-p('error.apikit.badrequest.statusCode')]]></ee:set-variable>
+if (error.description contains "requestCode")
+	p('error.apikit.unauthorized.statusCode')
+else
+	p('error.apikit.badrequest.statusCode')]]></ee:set-variable>
 					<ee:set-variable variableName="errorTitle"><![CDATA[%dw 2.0
 output application/java
 ---
-p('error.apikit.badrequest.title')]]></ee:set-variable>
+if (error.description contains "requestCode")
+	p('error.apikit.unauthorized.title')
+else
+	p('error.apikit.badrequest.title')]]></ee:set-variable>
 					<ee:set-variable variableName="errorCode"><![CDATA[%dw 2.0
 output application/java
 ---
-p('error.apikit.badrequest.errorCode')]]></ee:set-variable>
+if (error.description contains "requestCode")
+	p('error.apikit.unauthorized.errorCode')
+else
+	p('error.apikit.badrequest.errorCode')]]></ee:set-variable>
 					<ee:set-variable variableName="errorDetails"><![CDATA[%dw 2.0
 output application/java
 ---
-p('error.apikit.badrequest.description') ++ ':' ++ (error.description default '')]]></ee:set-variable>
+if (error.description contains "requestCode")
+	p('error.apikit.unauthorized.description')
+else
+	p('error.apikit.badrequest.description') ++ ': ' ++ (error.description default '')]]></ee:set-variable>
 				</ee:variables>
 			</ee:transform>
 			<flow-ref doc:name="Invoke Set Exception Response" doc:id="5a3ec7ab-8749-400d-991f-558ff412b620" name="set-exception-response-subflow" />
@@ -284,60 +299,6 @@ p('error.apikit.default.description')]]></ee:set-variable>
 		</on-error-propagate>
 	</error-handler>
 	<error-handler name="app-error-handler" doc:id="0f578d08-b7ab-484c-b7cd-06de7cc6fb5a" >
-		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="69c455a6-0fbb-4a79-aff9-33c73290aa6d" type="MULE:VALIDATION" when="vars.code != p('header.code')" >
-			<ee:transform doc:name="Set Variable - logCategory, errorStatus, errorTitle, errorCode, errorDetails" doc:id="d4225b37-88a6-48ba-b2c2-5db142009446" >
-				<ee:variables >
-					<ee:set-variable variableName="logCategory" ><![CDATA[%dw 2.0
-output application/java
----
-p('log.category.base') ++ '.unauthorized.error']]></ee:set-variable>
-					<ee:set-variable variableName="errorStatus" ><![CDATA[%dw 2.0
-output application/java
----
-p('error.user.api.unauthorized.statusCode')]]></ee:set-variable>
-					<ee:set-variable variableName="errorTitle" ><![CDATA[%dw 2.0
-output application/java
----
-p('error.user.api.unauthorized.title')]]></ee:set-variable>
-					<ee:set-variable variableName="errorCode" ><![CDATA[%dw 2.0
-output application/java
----
-p('error.user.api.unauthorized.errorCode')]]></ee:set-variable>
-					<ee:set-variable variableName="errorDetails" ><![CDATA[%dw 2.0
-output application/java
----
-p('error.user.api.unauthorized.description') ++ ':' ++ (error.description default '')]]></ee:set-variable>
-				</ee:variables>
-			</ee:transform>
-			<flow-ref doc:name="Invoke Set Exception Response" doc:id="a1f7c0a0-6b57-4642-a750-1745c0ad474a" name="set-exception-response-subflow" />
-		</on-error-continue>
-		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="efb515aa-48c4-4121-bb07-439c99db89bf" type="USER:DETAILS_NOT_FOUND">
-			<ee:transform doc:name="Set Variable - logCategory, errorStatus, errorTitle, errorCode, errorDetails" doc:id="c8550d6d-2254-4495-a75b-53fb10c3d7b0">
-				<ee:variables>
-					<ee:set-variable variableName="logCategory"><![CDATA[%dw 2.0
-output application/java
----
-p('log.category.base') ++ '.user.details.not-found.error']]></ee:set-variable>
-					<ee:set-variable variableName="errorStatus"><![CDATA[%dw 2.0
-output application/java
----
-p('error.user.api.userdetailsnotfound.statusCode')]]></ee:set-variable>
-					<ee:set-variable variableName="errorTitle"><![CDATA[%dw 2.0
-output application/java
----
-p('error.user.api.userdetailsnotfound.title')]]></ee:set-variable>
-					<ee:set-variable variableName="errorCode"><![CDATA[%dw 2.0
-output application/java
----
-p('error.user.api.userdetailsnotfound.errorCode')]]></ee:set-variable>
-					<ee:set-variable variableName="errorDetails"><![CDATA[%dw 2.0
-output application/java
----
-p('error.user.api.userdetailsnotfound.description')]]></ee:set-variable>
-				</ee:variables>
-			</ee:transform>
-			<flow-ref doc:name="Invoke Set Exception Response" doc:id="03ee0f38-5c0b-46a0-8b57-8acf1a19d3fc" name="set-exception-response-subflow" />
-		</on-error-continue>
 		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="967c9195-8eb2-4065-9454-5894400ecd2b" type="USER:NOT_FOUND">
 			<ee:transform doc:name="Set Variable - logCategory, errorStatus, errorTitle, errorCode, errorDetails" doc:id="14d1949c-5e87-437a-a50b-4318ebed801d">
 				<ee:variables>
@@ -360,7 +321,7 @@ p('error.user.api.usernotfound.errorCode')]]></ee:set-variable>
 					<ee:set-variable variableName="errorDetails"><![CDATA[%dw 2.0
 output application/java
 ---
-p('error.user.api.usernotfound.description')]]></ee:set-variable>
+p('error.user.api.usernotfound.description') ++ ': ' ++ (error.description default '')]]></ee:set-variable>
 				</ee:variables>
 			</ee:transform>
 			<flow-ref doc:name="Invoke Set Exception Response" doc:id="115a303f-eae5-493b-a910-9e4af0d5bdbe" name="set-exception-response-subflow" />

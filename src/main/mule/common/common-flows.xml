@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger" xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd">
-	<sub-flow name="validate-header-subflow" doc:id="5a081287-b9fb-4130-a81c-b0313a33b4aa" >
-		<set-variable value="#[attributes.headers.code]" doc:name="Set code Variable" doc:id="eae72bdb-4e36-4d1f-82a2-82df7981f376" variableName="code"/>
-		<choice doc:name="Choice" doc:id="9a099d06-5052-4857-902f-cdf4587009a6" >
-			<when expression="#[vars.code != p('header.code')]">
-				<raise-error doc:name="Raise Invalid Header Error" doc:id="824fdc57-70c7-4899-9bc3-55c605ced299" type="MULE:VALIDATION" description="Invalid code header"/>
-			</when>
-			<otherwise >
-				<json-logger:logger doc:name="Log valid code" doc:id="e40927c9-dc89-4328-a445-c9349699086e" config-ref="JSON_Logger_Config" message="#[&quot;Code header &quot; ++ attributes.headers.'code' ++ &quot; is valid.&quot;]" tracePoint="FLOW" priority="DEBUG" category='#["esb.api-user-v1.validate-header-subflow.log-valid-code"]'/>
-			</otherwise>
-		</choice>
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<sub-flow name="select-from-db-subflow" doc:id="7b341ee2-8e9f-414e-9e20-4f13202cd138" >
+		<json-logger:logger doc:name="Log Start of Select from DB" doc:id="4de46096-12c9-4417-b9b5-f0eb9b6411b0" config-ref="JSON_Logger_Config" message='#["Select from DB - START"]' tracePoint="BEFORE_REQUEST" priority="DEBUG" category='#["esb.api-user-v1.select-from-db-subflow.db.request"]' />
+		<db:select doc:name="Select from DB" doc:id="8f80e461-867c-49ee-9734-4fd30daff008" config-ref="Database_Config" queryTimeout="30" >
+			<db:sql ><![CDATA[#[vars.query]]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	username: attributes.uriParams.'username'
+}]]]></db:input-parameters>
+		</db:select>
+		<json-logger:logger doc:name="Log End of Select from DB" doc:id="34dbce64-d3d8-4b8c-915e-3572c4e51f04" config-ref="JSON_Logger_Config" message='#["Select from DB - END"]' tracePoint="AFTER_REQUEST" priority="DEBUG" category='#["esb.api-user-v1.select-from-db-subflow.db.response"]' />
 	</sub-flow>
 </mule>

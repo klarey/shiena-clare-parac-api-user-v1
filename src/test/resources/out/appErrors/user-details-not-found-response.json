@@ -1,8 +1,0 @@
-{
-    "error": {
-        "status": "404",
-        "code": "NOT_FOUND",
-        "title": "User details not found",
-        "details": "User details not found"
-    }
-}

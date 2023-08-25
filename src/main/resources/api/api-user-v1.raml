@@ -10,12 +10,13 @@ traits:
   Sortable: !include common/traits/sortable.raml
   Errorable: !include common/traits/errorable.raml
   Trackable: !include common/traits/trackable.raml
+  RequestCode: !include common/traits/request-code.raml
 
 types:
-  get-users-response-data-type: !include /common/data-types/get-users-response.raml
-  create-users-response-data-type: !include /common/data-types/create-users-response.raml
-  create-users-request-data-type: !include /common/data-types/create-users-request.raml
-  Health: !include /common/data-types/get-health-response.raml
+  GetUsersResponse: !include /common/data-types/get-users-response.raml
+  CreateUsersResponse: !include /common/data-types/create-users-response.raml
+  CreateUsersRequest: !include /common/data-types/create-users-request.raml
+  GetHealthResponse: !include /common/data-types/get-health-response.raml
 
 
 /users:
@@ -23,58 +24,53 @@ types:
     is:
       - Errorable
       - Trackable
+      - RequestCode
     description: Create user/s
-    headers:
-      code:
-        required: true
     body:
       application/json:
-        type: create-users-request-data-type
+        type: CreateUsersRequest
         example: !include /examples/create-users-request.json
     responses:
       200:
         body:
           application/json:
-            type: create-users-response-data-type
+            type: CreateUsersResponse
             example: !include /examples/create-users-response.json
   get:
     is:
       - Errorable
       - Trackable
+      - RequestCode
     description: Get all users
-    headers:
-      code:
-        required: true
     responses:
       200:
         body:
           application/json:
-            type: get-users-response-data-type
+            type: GetUsersResponse
             example: !include /examples/get-users-response.json
   /{username}:
     get:
       is:
         - Errorable
         - Trackable
+        - RequestCode
       description: Get user by username
-      headers:
-        code:
-          required: true
       responses:
         200:
           body:
             application/json:
-              type: get-users-response-data-type
+              type: GetUsersResponse
               example: !include /examples/get-users-response.json
 /health:
   get:
     is:
       - Errorable
       - Trackable
+      - RequestCode
     description: Get API health
     responses:
       200:
         body:
           application/json:
-            type: Health
+            type: GetHealthResponse
             example: !include /examples/get-health-response.json

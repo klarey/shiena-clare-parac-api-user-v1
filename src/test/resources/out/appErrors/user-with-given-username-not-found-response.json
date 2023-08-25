@@ -1,0 +1,8 @@
+{
+    "error": {
+        "status": "404",
+        "code": "NOT_FOUND",
+        "title": "User not found",
+        "details": "User not found: User with the given username does not exist"
+    }
+}

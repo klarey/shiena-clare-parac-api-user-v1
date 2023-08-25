@@ -8,52 +8,52 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<sub-flow name="get-users-subflow" doc:id="db5d4cb3-ac8a-4456-8e89-cabe56441f1f" >
 		<json-logger:logger doc:name="Log Start" doc:id="f5365738-fa24-44b6-8c8c-d13ef2e27f5b" config-ref="JSON_Logger_Config" message='#["get-users-flow - START"]' priority="DEBUG" category='#["esb.api-user-v1.get-users.start"]'/>
-		<flow-ref doc:name="Invoke Validate Header Flow" doc:id="2a35d43d-432a-4519-834f-d27e33962b12" name="validate-header-subflow" />
-		<json-logger:logger doc:name="Log Start of Select Users" doc:id="38ce2791-8178-4764-9fd3-fdbcd61db75d" config-ref="JSON_Logger_Config" message='#["Select All Users - START"]' tracePoint="BEFORE_REQUEST" priority="DEBUG" category='#["esb.api-user-v1.get-users-subflow.db.request"]'/>
-		<db:select doc:name="Select All Users" doc:id="d64987d7-bdb9-400d-a7ec-68d5d7ea44cb" config-ref="Database_Config" queryTimeout="30" >
-			<db:sql ><![CDATA[SELECT Account.userId, username, active, date_registered, fullname, birthday, gender
-FROM Account 
-INNER JOIN UserDetails
-ON Account.userId = UserDetails.userId]]></db:sql>
-		</db:select>
-		<json-logger:logger doc:name="Log End of Select All Users" doc:id="4c92c28e-7b70-433f-a6a9-7e6dbad9a3ab" config-ref="JSON_Logger_Config" message='#["Select All Users - END"]' tracePoint="AFTER_REQUEST" priority="DEBUG" category='#["esb.api-user-v1.get-users-subflow.db.response"]'/>
-		<set-variable value="#[output application/json&#10;---&#10;[]]" doc:name="Initialize output variable" doc:id="c92a8717-f190-428d-9ac1-b642b4837274" variableName="output" />
+		<ee:transform doc:name="Set Variables output and query" doc:id="5fc9d65b-1aaf-4888-995d-be2532190708" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="query" ><![CDATA[%dw 2.0
+output application/java
+---
+p('db.select_all_users_query')]]></ee:set-variable>
+				<ee:set-variable variableName="output" ><![CDATA[%dw 2.0
+output application/json
+---
+[]]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="Invoke Select from DB Subflow" doc:id="ba9073be-cf9b-4ab0-9a49-0a1fc6206185" name="select-from-db-subflow"/>
 		<choice doc:name="Choice" doc:id="5f988d07-0ed5-420a-8933-f8f5017fff1c" >
 			<when expression="#[sizeOf(payload) != 0]" >
 				<foreach doc:name="For Each user" doc:id="38449e70-73c5-49f3-8a32-764639ede333" collection="#[payload]" >
 					<choice doc:name="Choice" doc:id="f8f9e0a3-d4ee-4df1-9891-8f5930c2d567" >
 						<when expression="#[payload.active == true]" >
-							<ee:transform doc:name="Set tempPayload for active account" doc:id="47c1f78e-0048-4fe9-b89d-730319a200ee" >
+							<ee:transform doc:name="Set payload for active account and append to output variable" doc:id="47c1f78e-0048-4fe9-b89d-730319a200ee" >
 								<ee:message >
-									<ee:set-payload resource="mappings/get-users-tempPayload-for-active-account.dwl" />
 								</ee:message>
-								<ee:variables />
+								<ee:variables >
+									<ee:set-variable resource="mappings/get-users-set-payload-for-active-account.dwl" variableName="output" />
+								</ee:variables>
 							</ee:transform>
-							<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;users:(vars."output".users default[]) ++ (payload.users default[])]' doc:name="Append to output variable" doc:id="2b2a1ffb-1813-48dc-a984-d791da45ab5c" variableName="output" />
 						</when>
 						<otherwise >
-							<json-logger:logger doc:name="Log User is not Active" doc:id="91b42c92-42b6-483a-9685-eb7611cc1fd6" config-ref="JSON_Logger_Config" message='#["User " ++ payload.userId ++ " is not Active"]' tracePoint="FLOW" priority="DEBUG" category='#["esb.api-user-v1.get-users-subflow.log-user-is-not-active"]'/>
-							<ee:transform doc:name="Set tempPayload for inactive account" doc:id="202da201-8107-4551-ae7d-4c0d06486e8a" >
+							<json-logger:logger doc:name="Log User is not Active" doc:id="91b42c92-42b6-483a-9685-eb7611cc1fd6" config-ref="JSON_Logger_Config" message='#["User with userId " ++ payload.userId ++ " is not Active"]' tracePoint="EXCEPTION" priority="DEBUG" category='#["esb.api-user-v1.get-users-subflow.log-user-is-not-active"]'/>
+							<ee:transform doc:name="Set payload for inactive account and append to output variable" doc:id="202da201-8107-4551-ae7d-4c0d06486e8a" >
 								<ee:message >
-									<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
-
-var tempPayload = {
-	"users": []
-	}
-
----
-tempPayload
-]]></ee:set-payload>
 								</ee:message>
+								<ee:variables >
+									<ee:set-variable variableName="output" ><![CDATA[%dw 2.0
+output application/java
+---
+users:(vars."output".users default[]) ++ ([])]]></ee:set-variable>
+								</ee:variables>
 							</ee:transform>
-							<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;users:(vars."output".users default[]) ++ (payload.users default[])]' doc:name="Append to output variable" doc:id="580337e6-e583-44e2-9011-3c60532fb2b4" variableName="output" />
 						</otherwise>
 					</choice>
 				</foreach>
 			</when>
 			<otherwise >
-				<raise-error doc:name="Raise No User Retrieved Error" doc:id="889cdfdd-7dc5-461f-a880-09ea7cb970ed" type="USER:NOT_FOUND" description="User not found" />
+				<raise-error doc:name="Raise No User Retrieved from DB Error" doc:id="889cdfdd-7dc5-461f-a880-09ea7cb970ed" type="USER:NOT_FOUND" description="No user retrieved from DB" />
 			</otherwise>
 		</choice>
 		<choice doc:name="Choice" doc:id="c9bfe02b-3614-4941-835a-6f47bd86bc1c" >
@@ -74,7 +74,7 @@ output application/java
 				</ee:transform>
 			</when>
 			<otherwise >
-				<raise-error doc:name="Raise No User Retrieved Error" doc:id="e52f047d-9e3d-42bd-b9c0-af34dc75e0d4" type="USER:NOT_FOUND" description="User not found" />
+				<raise-error doc:name="Raise No active user retrieved from DB Error" doc:id="e52f047d-9e3d-42bd-b9c0-af34dc75e0d4" type="USER:NOT_FOUND" description="No active user retrieved from DB" />
 			</otherwise>
 		</choice>
 		<json-logger:logger doc:name="Log End" doc:id="4b5bfbd0-6e7d-472a-be6b-2296df3a95d0" config-ref="JSON_Logger_Config" message='#["get-users-flow - END"]' priority="DEBUG" category='#["esb.api-user-v1.get-users.end"]'/>

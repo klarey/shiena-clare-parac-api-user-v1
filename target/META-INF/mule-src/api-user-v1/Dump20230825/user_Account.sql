@@ -1,0 +1,56 @@
+-- MySQL dump 10.13  Distrib 8.0.33, for macos13 (x86_64)
+--
+-- Host: 127.0.0.1    Database: user
+-- ------------------------------------------------------
+-- Server version	8.0.34
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `Account`
+--
+
+DROP TABLE IF EXISTS `Account`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Account` (
+  `id` varchar(36) DEFAULT NULL,
+  `userId` varchar(36) NOT NULL,
+  `username` varchar(45) DEFAULT NULL,
+  `active` tinyint(1) DEFAULT NULL,
+  `date_registered` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`userId`),
+  UNIQUE KEY `userId_UNIQUE` (`userId`),
+  UNIQUE KEY `username_UNIQUE` (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Account`
+--
+
+LOCK TABLES `Account` WRITE;
+/*!40000 ALTER TABLE `Account` DISABLE KEYS */;
+INSERT INTO `Account` VALUES ('40ef964c-430f-11ee-8822-0242ac110002','40ef9097-430f-11ee-8822-0242ac110002','shiener',1,'20-08-2021'),('6c95bc5c-430c-11ee-8822-0242ac110002','6c95b77e-430c-11ee-8822-0242ac110002','derk',1,'20-08-2021'),('6c95bb83-430c-11ee-8822-0242ac110002','6c95b781-430c-11ee-8822-0242ac110002','shien',1,'25-09-2022'),('7bc94c0c-430b-11ee-8822-0242ac110002','7bc94698-430b-11ee-8822-0242ac110002','jenniesummers',1,'20-08-2013'),('7bc94c0a-430b-11ee-8822-0242ac110002','7bc946da-430b-11ee-8822-0242ac110002','jackpeters',1,'25-09-2014'),('7bc94c0d-430b-11ee-8822-0242ac110002','7bc9485e-430b-11ee-8822-0242ac110002','john123',1,'20-08-2012'),('adc5694b-430b-11ee-8822-0242ac110002','adc56007-430b-11ee-8822-0242ac110002','testaaaa',1,'20-08-2006'),('adc56949-430b-11ee-8822-0242ac110002','adc5600d-430b-11ee-8822-0242ac110002','testbbbb',1,'25-09-2007');
+/*!40000 ALTER TABLE `Account` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2023-08-25 14:35:29

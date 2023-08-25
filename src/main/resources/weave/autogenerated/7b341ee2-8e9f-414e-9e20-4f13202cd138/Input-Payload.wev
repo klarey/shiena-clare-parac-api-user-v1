@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_7b341ee2_8e9f_414e_9e20_4f13202cd138_Input_Payload = Array<{|  userId: String,   username?: String,   active?: Boolean,   date_registered?: String,   fullname?: String,   birthday?: String,   gender?: String|}>
+

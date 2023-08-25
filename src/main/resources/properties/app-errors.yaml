@@ -9,7 +9,7 @@ error.user.api:
         statusCode: "404"
         errorCode: "NOT_FOUND"
         title: "User not found"
-        description: "User with the given username does not exist"
+        description: "User not found"
     userdetailsnotfound:
         statusCode: "404"
         errorCode: "NOT_FOUND"

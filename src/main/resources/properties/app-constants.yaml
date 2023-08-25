@@ -1,2 +1,7 @@
 header:
   code: "aOEF3M2cEG0204NO"
+  
+db:
+  select_all_users_query: "SELECT Account.userId, username, active, date_registered, fullname, birthday, gender FROM Account INNER JOIN UserDetails ON Account.userId = UserDetails.userId"
+  select_specific_user_query: "SELECT Account.userId, username, active, date_registered, fullname, birthday, gender FROM Account INNER JOIN UserDetails ON Account.userId = UserDetails.userId WHERE Account.username = :username"
+  create_users_query: "call insert_into_Account_and_UserDetails(UUID(), :fullname, :birthday, :gender, :username, 1, :date_registered)"

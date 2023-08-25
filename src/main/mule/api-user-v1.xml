@@ -26,7 +26,7 @@
         <error-handler ref="app-error-handler" />
     </flow>
     <flow name="get:\health:api-user-v1-config">
-		<flow-ref doc:name="Flow Reference to get-health-subflow" doc:id="226635d7-21f0-49a1-8448-ea684c3fb0e0" name="get-health-subflow"/>
-		<error-handler ref="app-error-handler" />
+        <flow-ref doc:name="Flow Reference to get-health-subflow" doc:id="226635d7-21f0-49a1-8448-ea684c3fb0e0" name="get-health-subflow" />
+        <error-handler ref="app-error-handler" />
     </flow>
 </mule>
